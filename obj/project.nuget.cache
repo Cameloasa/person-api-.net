@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "BmT77M2NzEQ=",
+  "success": true,
+  "projectFilePath": "C:\\Projects\\PersonApi\\PersonApi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\camel\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.0\\microsoft.aspnetcore.openapi.10.0.0.nupkg.sha512",
+    "C:\\Users\\camel\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
