@@ -31,3 +31,4 @@ C:\Projects\PersonApi\obj\Debug\net10.0\refint\PersonApi.dll
 C:\Projects\PersonApi\obj\Debug\net10.0\PersonApi.pdb
 C:\Projects\PersonApi\obj\Debug\net10.0\PersonApi.genruntimeconfig.cache
 C:\Projects\PersonApi\obj\Debug\net10.0\ref\PersonApi.dll
+C:\Projects\PersonApi\obj\Debug\net10.0\PersonApi.sourcelink.json

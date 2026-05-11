@@ -42,6 +42,10 @@ public class Personscontroller(IPersonService service) : ControllerBase
     [HttpPost]
     public ActionResult<Person?> CreatePerson([FromBody]CreatePersonRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         try{
             Person newPerson = _service.CreatePerson(request);
             return Created("/persons/", newPerson);

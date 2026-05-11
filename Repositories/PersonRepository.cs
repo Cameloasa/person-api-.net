@@ -6,7 +6,7 @@ public interface IPersonRepository
 {
     public List<Person> GetAllPersons();
     public Person? GetPersonById(string id);
-    public Person CreatePerson(Person person);
+    public bool CreatePerson(Person person);
     public Person? UpdatePerson(string id, Person personToUpdate);
     public bool DeletePerson(string id);
 }
@@ -25,10 +25,16 @@ public class PersonRepository : IPersonRepository
     }
 
 
-    public Person CreatePerson(Person person)
+    public bool CreatePerson(Person person)
     {
+        try{
         persons.Add(person);
-        return person;
+        return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public bool DeletePerson(string id)

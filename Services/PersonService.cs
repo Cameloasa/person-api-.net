@@ -1,4 +1,4 @@
-
+//src/Services/PersonService.cs
 namespace PersonApi.Services;
 
 using PersonApi.Models;
@@ -28,7 +28,11 @@ public class PersonService : IPersonService
                                 request.Age, 
                                 request.IsMarried, 
                                 new(request.Street, request.Zip, request.City));
-            _personRepository.CreatePerson(newPerson);
+        bool succes =  _personRepository.CreatePerson(newPerson);
+        if (!succes)
+        {
+            throw new InvalidOperationException("Failed to create person.");
+        }
         return newPerson;
     }
 
