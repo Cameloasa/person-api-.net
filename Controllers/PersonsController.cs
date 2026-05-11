@@ -44,7 +44,7 @@ public class Personscontroller(IPersonService service) : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return ValidationProblem(ModelState);
         }
         try{
             Person newPerson = _service.CreatePerson(request);
