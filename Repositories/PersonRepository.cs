@@ -18,9 +18,9 @@ public class PersonRepository : IPersonRepository
      {
         persons =
         [
-            new Person("John Doe", 30, false, new Address("Main Street 1", "12345", "Anytown")),
-            new Person("Jane Smith", 25, true, new Address("Oak Avenue 2", "67890", "Somewhere")),
-            new Person("Alice Johnson", 40, true, new Address("Pine Road 3", "54321", "Everytown"))
+            new Person("John Doe", 30, false),
+            new Person("Jane Smith", 25, true),
+            new Person("Alice Johnson", 40, true)
         ];
     }
 
@@ -66,7 +66,6 @@ public class PersonRepository : IPersonRepository
         existingPerson.Name = personToUpdate.Name;
         existingPerson.Age = personToUpdate.Age;
         existingPerson.IsMarried = personToUpdate.IsMarried;
-        existingPerson.Address = personToUpdate.Address;
         return existingPerson;
     }
 }
