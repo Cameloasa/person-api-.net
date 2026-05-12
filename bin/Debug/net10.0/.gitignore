@@ -1,9 +1,0 @@
-# .gitignore
-bin/
-obj/
-*.user
-*.suo
-.vs/
-*.pidb
-*.log
-*.tmp

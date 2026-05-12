@@ -1,0 +1,22 @@
+# Build folders
+bin/
+obj/
+
+# VS Code
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+
+# Logs
+*.log
+
+# EF Migrations cache
+*.cache
