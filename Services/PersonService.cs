@@ -7,11 +7,11 @@ using PersonApi.Repositories;
 
 public interface IPersonService
 {
-    List<Person> GetPersons();
-    Person? GetPersonsById(string id);
-    Person CreatePerson(CreatePersonRequest request);
-    Person? UpdatePerson(string id,CreatePersonRequest request);
-    bool DeletePerson(string id);
+    IEnumerable<Person> GetPersons();
+    Person? GetPersonById(string id);
+    Task<Person> CreatePerson(CreatePersonRequest request);
+    Task<Person?> UpdatePerson(string id,CreatePersonRequest request);
+    Task<bool> DeletePerson(string id);
 }
 public class PersonService : IPersonService
 {
@@ -22,53 +22,74 @@ public class PersonService : IPersonService
         _personRepository = repo;
     }
    
-    public Person CreatePerson(CreatePersonRequest request)
+    //create
+    public async Task<Person> CreatePerson(CreatePersonRequest request)
     {
         Person newPerson = new(request.Name, 
                                 request.Age, 
                                 request.IsMarried
                                 );
-        bool succes =  _personRepository.CreatePerson(newPerson);
-        if (!succes)
-        {
-            throw new InvalidOperationException("Failed to create person.");
-        }
-        return newPerson;
+        Person createdPerson = await _personRepository.CreatePerson(newPerson);
+        
+        return createdPerson;
     }
 
-    public bool DeletePerson(string id)
+    //delete
+    public async Task<bool> DeletePerson(string id)
     {
-        Person? found = _personRepository.GetPersonById(id); 
-        if (found == null)
+        try
         {
-            return false;
+            var exists = _personRepository.GetPersonById(id);
+            if (exists == null)
+                return false;
+
+            return await _personRepository.DeletePerson(id);
         }
-        _personRepository.DeletePerson(id);
-        return true;
+        catch
+        {
+            throw;
+        }
     }
 
-    public List<Person> GetPersons()
+    // get all persons
+    public IEnumerable<Person> GetPersons()
     {
         return _personRepository.GetAllPersons();
     }
 
-    public Person? GetPersonsById(string id)
+    // get person by id
+    public Person? GetPersonById(string id)
     {
-         Person? found = _personRepository.GetPersonById(id);
-            return found;
+         return _personRepository.GetPersonById(id);       
     }
 
-    public Person? UpdatePerson(string id, CreatePersonRequest request)
+    //update
+    public async Task<Person?> UpdatePerson(string id, CreatePersonRequest request)
     {
-        Person? found = _personRepository.GetPersonById(id);
-        if (found == null)
+        try
         {
-            return null;
-        }
-        found.Name = request.Name;
-        found.Age = request.Age;    
-        found.IsMarried = request.IsMarried;
-        return found;
+            // 1. Verify if person exists
+            var existingPerson = _personRepository.GetPersonById(id);
+            if (existingPerson == null)
+                return null;
 
+            // 2. Map model request
+            var personToUpdate = new Person(
+                request.Name,
+                request.Age,
+                request.IsMarried
+            );
+
+            // 3. Call repository 
+            var updated = await _personRepository.UpdatePerson(id, personToUpdate);
+
+            //return
+            return updated;
+        }
+        catch
+        {
+            throw;
+        }
     }
+
 }

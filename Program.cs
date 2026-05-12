@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+using PersonApi.Context;
 using PersonApi.Repositories;
 using PersonApi.Services;
 
@@ -7,9 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("Test database"));
+
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IPersonService, PersonService>();
-builder.Services.AddSingleton<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
 
 var app = builder.Build();

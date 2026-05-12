@@ -25,69 +25,92 @@ public class Personscontroller(IPersonService service) : ControllerBase
     public ActionResult<Person?> GetPersonById(string id)
     {
         try{
-        Person? found =_service.GetPersonsById(id);   
+        Person? found =_service.GetPersonById(id);   
     
         if (found == null)
-    {
-        return NotFound($"Person with ID {id} not found.");
-    }
-
-    return Ok(found);
-    }
-    catch (Exception){
-        return StatusCode(500, "An error occurred while processing the request.");
-    }
-    }
-    
-    [HttpPost]
-    public ActionResult<Person?> CreatePerson([FromBody]CreatePersonRequest request)
-    {
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-        try{
-            Person newPerson = _service.CreatePerson(request);
-            return Created("/persons/", newPerson);
-        }catch (Exception ){
-            return StatusCode(500, "An error occurred while processing the request.");
-            }
-        }
-
-    [HttpPatch]
-    [Route("{id}")]
-    public ActionResult<Person?> UpdatePerson(string id, [FromBody]CreatePersonRequest request)
-    {
-        try{
-    
-        Person? updatedPerson = _service.UpdatePerson(id, request);
-        if (updatedPerson == null)
         {
             return NotFound($"Person with ID {id} not found.");
         }
-            return Ok(updatedPerson);
-        }
-        catch{
-            return StatusCode(500, "An error occurred while processing the request.");
-            }
-        }
 
-    [HttpDelete]
-    [Route("{id}")]
-    public ActionResult DeletePerson(string id)
+            return Ok(found);
+        }
+        catch (Exception){
+            return StatusCode(500, "An error occurred while processing the request.");
+        }
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<Person?>> CreatePerson([FromBody]CreatePersonRequest request)
     {
         try{
-            Person? found = _service.GetPersonsById(id);
-                if (found == null)
-                {
-                    return NotFound($"Person with ID {id} not found.");
-                }
-                _service.DeletePerson(id);
-                return Ok();
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
             }
-            catch{
-                return StatusCode(500, "An error occurred while processing the request.");
+                Person newPerson = await _service.CreatePerson(request);
+
+                return Created("/persons/", newPerson);
+        
+        }catch
+            {
+                throw;
             }
-                    
-                }
+            
+        }
+
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<Person?>> UpdatePerson(string id, [FromBody] CreatePersonRequest request)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            // 1. Call async
+            var updatedPerson = await _service.UpdatePerson(id, request);
+
+            // 2. If not exist 
+            if (updatedPerson == null)
+            {
+                return NotFound($"Person with ID {id} not found.");
+            }
+
+            // 3. Return updated person
+            return Ok(updatedPerson);
+        }
+        catch
+        {
+            return StatusCode(500, "An error occurred while processing the request.");
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeletePerson(string id)
+    {
+        try
+        {
+            // 1. Verificăm dacă persoana există
+            var found = _service.GetPersonById(id);
+            if (found == null)
+            {
+                return NotFound($"Person with ID {id} not found.");
+            }
+
+            // 2. Ștergem persoana
+            var deleted = await _service.DeletePerson(id);
+
+            if (!deleted)
+            {
+                return StatusCode(500, "Could not delete the person.");
+            }
+
+            return Ok($"Person with ID {id} deleted successfully.");
+        }
+        catch
+        {
+            return StatusCode(500, "An error occurred while processing the request.");
+        }
+    }
 }

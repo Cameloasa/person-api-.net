@@ -1,71 +1,102 @@
 //src/Repositories/PersonRepository.cs
+using PersonApi.Context;
 using PersonApi.Models;
 namespace PersonApi.Repositories;
 
 public interface IPersonRepository
 {
-    public List<Person> GetAllPersons();
+    public IEnumerable<Person> GetAllPersons();
     public Person? GetPersonById(string id);
-    public bool CreatePerson(Person person);
-    public Person? UpdatePerson(string id, Person personToUpdate);
-    public bool DeletePerson(string id);
+    public Task<Person> CreatePerson(Person personToSave);
+    public Task<Person?> UpdatePerson(string id, Person personToUpdate);
+    public Task<bool> DeletePerson(string id);
 }
-public class PersonRepository : IPersonRepository
+public class PersonRepository (ApplicationDbContext context) : IPersonRepository
 {
 
-    private List<Person> persons;
-    public PersonRepository()
-     {
-        persons =
-        [
-            new Person("John Doe", 30, false),
-            new Person("Jane Smith", 25, true),
-            new Person("Alice Johnson", 40, true)
-        ];
-    }
-
-
-    public bool CreatePerson(Person person)
+    private readonly ApplicationDbContext _context = context;
+    
+    //create
+    public async Task<Person> CreatePerson(Person personToSave)
     {
         try{
-        persons.Add(person);
-        return true;
+            var result = await _context.People.AddAsync(personToSave);
+            int changes = await _context.SaveChangesAsync();
+            if(changes > 0)
+            {
+                return result.Entity;
+            }
+            throw new Exception("Could not add person");
+            
         }
         catch
         {
-            return false;
+            throw;
         }
     }
 
-    public bool DeletePerson(string id)
+    //delete
+    public async Task<bool> DeletePerson(string id)
     {
-        var personToDelete = GetPersonById(id);
-        if (personToDelete == null) 
-            return false;
+        try
+        {
+            //find person to delete
+            var personToDelete = await _context.People.FindAsync(id);
+            //if not exist return false
+            if(personToDelete == null)
+            {
+                return false;
+            }
+            //delete person
+            _context.People.Remove(personToDelete);
+            //save to database
+            await _context.SaveChangesAsync();
+            return true;
 
-        persons.Remove(personToDelete);
-        return true;
+        }
+        catch
+        {
+            throw;
+        }
     }
 
-    public List<Person> GetAllPersons()
+    public IEnumerable<Person> GetAllPersons()
     {
-        return persons;
+        _context.Database.EnsureCreated();
+        return _context.People.ToList();
     }
 
     public Person? GetPersonById(string id)
     {
-        return persons.FirstOrDefault(p => p.Id == id);
+        return _context.People.Find(id);
     }
 
-    public Person? UpdatePerson(string id, Person personToUpdate)
+    //update
+   public async Task<Person?> UpdatePerson(string id, Person personToUpdate)
     {
-        var existingPerson = GetPersonById(id);
-        if (existingPerson == null) 
-            return null;
+        try
+        {
+            // 1. Find person in DB
+            var existingPerson = await _context.People.FindAsync(id);
 
-        existingPerson.Name = personToUpdate.Name;
-        existingPerson.Age = personToUpdate.Age;
-        existingPerson.IsMarried = personToUpdate.IsMarried;
-        return existingPerson;
+            // 2. If not existing return null
+            if (existingPerson == null)
+                return null;
+
+            // 3. Uptade fields
+            existingPerson.Name = personToUpdate.Name;
+            existingPerson.Age = personToUpdate.Age;
+            existingPerson.IsMarried = personToUpdate.IsMarried;
+
+            // 4. Save in Db
+            await _context.SaveChangesAsync();
+
+            return existingPerson;
+        }
+        catch
+        {
+            throw;
+        }
     }
+        
 }
