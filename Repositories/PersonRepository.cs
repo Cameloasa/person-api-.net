@@ -1,4 +1,5 @@
 //src/Repositories/PersonRepository.cs
+using Microsoft.EntityFrameworkCore;
 using PersonApi.Context;
 using PersonApi.Models;
 namespace PersonApi.Repositories;
@@ -62,13 +63,13 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
 
     public IEnumerable<Person> GetAllPersons()
     {
-        _context.Database.EnsureCreated();
-        return _context.People.ToList();
+
+        return _context.People.Include(p => p.Adress).ToList();
     }
 
     public Person? GetPersonById(string id)
     {
-        return _context.People.Find(id);
+        return _context.People.Include(p => p.Adress).ThenInclude(a => a.People).First(p => p.Id == id);
     }
 
     //update

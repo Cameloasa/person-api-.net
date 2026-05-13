@@ -7,5 +7,8 @@ namespace PersonApi.Models;
     public string Name { get; set; } = name;
     public int Age { get; set; } = age;
     public bool IsMarried { get; set; } = isMarried;
-    //public Address Address { get; set; } = address;
+
+    //relation to adress - one to many
+    public string? AdressId {get; set;}
+    public Adress? Adress { get; set; } 
 }
