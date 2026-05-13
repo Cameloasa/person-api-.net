@@ -15,16 +15,17 @@ public struct CreatePersonRequest {
 
     public bool IsMarried { get; set; }
 
-    [Required(ErrorMessage = "Street is required.")]
-    [StringLength(200, MinimumLength = 5, ErrorMessage = "Street must be between 5 and 200 characters.")]
+    //an adress that exists
+    public string? AdressId { get; set; }
+
+    //new adress
+   
     public string Street { get; set; }
 
-    [Required(ErrorMessage = "Zip code is required.")]
-    [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Zip code must be in the format 12345 or 12345-6789.")]
+    
     public string Zip { get; set; }
     
-    [Required(ErrorMessage = "City is required.")]
-    [StringLength(100, MinimumLength = 2, ErrorMessage = "City must be between 2 and 100 characters.")]
+    
     public string City { get; set; }
 
 

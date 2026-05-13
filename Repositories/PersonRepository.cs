@@ -11,24 +11,33 @@ public interface IPersonRepository
     public Task<Person> CreatePerson(Person personToSave);
     public Task<Person?> UpdatePerson(string id, Person personToUpdate);
     public Task<bool> DeletePerson(string id);
+    
 }
 public class PersonRepository (ApplicationDbContext context) : IPersonRepository
 {
 
     private readonly ApplicationDbContext _context = context;
     
-    //create
+    //create person
     public async Task<Person> CreatePerson(Person personToSave)
     {
-        try{
+        try
+        {
+            // 1. Get adress 
+            var adress = await GetOrCreateAdress(personToSave);
+
+            // 2. Link person to adress
+            personToSave.AdressId = adress.Id;
+            personToSave.Adress = adress;
+
+            // 3. save person to db
             var result = await _context.People.AddAsync(personToSave);
             int changes = await _context.SaveChangesAsync();
-            if(changes > 0)
-            {
+
+            if (changes > 0)
                 return result.Entity;
-            }
+
             throw new Exception("Could not add person");
-            
         }
         catch
         {
@@ -74,6 +83,7 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
 
     //update
    public async Task<Person?> UpdatePerson(string id, Person personToUpdate)
+
     {
         try
         {
@@ -99,5 +109,28 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
             throw;
         }
     }
-        
+
+    //helper for adress
+    private async Task<Adress> GetOrCreateAdress(Person person)
+    {
+        // if we have AdressId → use current adress
+        if (!string.IsNullOrEmpty(person.AdressId))
+        {
+            var existing = await _context.Adresses.FindAsync(person.AdressId)
+                ?? throw new Exception("AdressId does not exist.");
+
+            return existing;
+        }
+
+        // id we have an obiect Address → create a new adress
+        if (person.Adress != null)
+        {
+            await _context.Adresses.AddAsync(person.Adress);
+            await _context.SaveChangesAsync();
+            return person.Adress;
+        }
+
+        throw new Exception("No address provided.");
+    }
+
 }

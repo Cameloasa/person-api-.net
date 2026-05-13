@@ -25,10 +25,20 @@ public class PersonService : IPersonService
     //create
     public async Task<Person> CreatePerson(CreatePersonRequest request)
     {
-        Person newPerson = new(request.Name, 
-                                request.Age, 
+        Adress newAdress = new Adress
+        (
+            request.Street,
+            request.Zip,
+            request.City
+        );
+        Person newPerson = new(request.Name,
+                                request.Age,
                                 request.IsMarried
-                                );
+                                )
+        {
+            Adress = newAdress
+        };
+
         Person createdPerson = await _personRepository.CreatePerson(newPerson);
         
         return createdPerson;
