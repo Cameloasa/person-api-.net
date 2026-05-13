@@ -19,14 +19,9 @@ public struct CreatePersonRequest {
     public string? AdressId { get; set; }
 
     //new adress
-   
-    public string Street { get; set; }
-
-    
-    public string Zip { get; set; }
-    
-    
-    public string City { get; set; }
+    public string? Street { get; set; }
+    public string? Zip { get; set; }
+    public string? City { get; set; }
 
 
 }

@@ -25,23 +25,28 @@ public class PersonService : IPersonService
     //create
     public async Task<Person> CreatePerson(CreatePersonRequest request)
     {
-        Adress newAdress = new Adress
-        (
-            request.Street,
-            request.Zip,
-            request.City
+            Person newPerson = new(
+            request.Name,
+            request.Age,
+            request.IsMarried
         );
-        Person newPerson = new(request.Name,
-                                request.Age,
-                                request.IsMarried
-                                )
-        {
-            Adress = newAdress
-        };
 
-        Person createdPerson = await _personRepository.CreatePerson(newPerson);
-        
-        return createdPerson;
+        // 1. If existing adress -> use it
+        if (!string.IsNullOrEmpty(request.AdressId))
+        {
+            newPerson.AdressId = request.AdressId;
+        }
+        else
+        {
+            // 2. If not AdressId → create a new one
+            newPerson.Adress = new Adress(
+                request.Street!,
+                request.Zip!,
+                request.City!
+            );
+        }
+
+        return await _personRepository.CreatePerson(newPerson);
     }
 
     //delete
@@ -78,22 +83,37 @@ public class PersonService : IPersonService
     {
         try
         {
-            // 1. Verify if person exists
             var existingPerson = _personRepository.GetPersonById(id);
             if (existingPerson == null)
                 return null;
 
-            // 2. Map model request
             var personToUpdate = new Person(
                 request.Name,
                 request.Age,
                 request.IsMarried
             );
 
-            // 3. Call repository 
-            var updated = await _personRepository.UpdatePerson(id, personToUpdate);
+            // 1. If user sent AdressId → change to a new adress
+            if (!string.IsNullOrEmpty(request.AdressId))
+            {
+                personToUpdate.AdressId = request.AdressId;
+            }
+            // 2. If user send Street/Zip/City → create a new adress
+            else if (request.Street != null && request.Zip != null && request.City != null)
+            {
+                personToUpdate.Adress = new Adress(
+                    request.Street!,
+                    request.Zip!,
+                    request.City!
+                );
+            }
+            // 3. If user doesn't send adrees id → change only name
+            else
+            {
+                personToUpdate.AdressId = existingPerson.AdressId;
+            }
 
-            //return
+            var updated = await _personRepository.UpdatePerson(id, personToUpdate);
             return updated;
         }
         catch
@@ -101,5 +121,4 @@ public class PersonService : IPersonService
             throw;
         }
     }
-
 }

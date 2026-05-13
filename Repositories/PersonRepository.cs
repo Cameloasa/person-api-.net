@@ -78,28 +78,35 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
 
     public Person? GetPersonById(string id)
     {
-        return _context.People.Include(p => p.Adress).ThenInclude(a => a.People).First(p => p.Id == id);
+        return _context.People
+        .Include(p => p.Adress)
+        .ThenInclude(a => a.People)
+        .FirstOrDefault(p => p.Id == id);
     }
 
     //update
    public async Task<Person?> UpdatePerson(string id, Person personToUpdate)
-
     {
         try
         {
             // 1. Find person in DB
             var existingPerson = await _context.People.FindAsync(id);
 
-            // 2. If not existing return null
             if (existingPerson == null)
                 return null;
 
-            // 3. Uptade fields
+            // 2. Update simple fields
             existingPerson.Name = personToUpdate.Name;
             existingPerson.Age = personToUpdate.Age;
             existingPerson.IsMarried = personToUpdate.IsMarried;
 
-            // 4. Save in Db
+            // 3. Update address (existing or new)
+            var adress = await GetOrCreateAdress(personToUpdate);
+
+            existingPerson.AdressId = adress.Id;
+            existingPerson.Adress = adress;
+
+            // 4. Save changes
             await _context.SaveChangesAsync();
 
             return existingPerson;
@@ -109,7 +116,6 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
             throw;
         }
     }
-
     //helper for adress
     private async Task<Adress> GetOrCreateAdress(Person person)
     {
