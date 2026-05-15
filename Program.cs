@@ -1,9 +1,13 @@
 
 using System.Text.Json.Serialization;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using PersonApi.Context;
+using PersonApi.Models.DTOs;
+using PersonApi.Models.Requests;
 using PersonApi.Repositories;
 using PersonApi.Services;
+using PersonApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +24,18 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+
+
 builder.Services.AddAutoMapper(options => options.AddMaps(typeof(Program)));
+
+builder.Services.AddScoped<IValidator<CreatePersonRequest>, CreatePersonRequestValidator>();
+builder.Services.AddScoped<IValidator<AdressDTO>, AdressDTOValidator>();
+
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = false;
+    });
 
 
 var app = builder.Build();

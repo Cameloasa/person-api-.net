@@ -6,7 +6,7 @@ namespace PersonApi.Models;
     public class Person
 {
     public string Id { get; set; } = Guid.NewGuid().ToString()[..6];
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public int Age { get; set; }
     public bool IsMarried { get; set; }
 
@@ -19,5 +19,8 @@ namespace PersonApi.Models;
         IsMarried = isMarried;
     }
 
-    public Person() {} // EF Core needs this
+    public Person()
+    {
+        
+    } // EF Core needs this
 }

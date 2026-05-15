@@ -4,7 +4,7 @@ using PersonApi.Models.DTOs;
 namespace PersonApi.Models.Requests;
 public class CreatePersonRequest
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public int Age { get; set; }
     public bool IsMarried { get; set; }
     public List<AdressDTO> Adresses { get; set; } = new();

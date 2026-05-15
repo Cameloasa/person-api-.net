@@ -72,7 +72,10 @@ obj/Debug/net10.0/
 Program.cs
 Repositories/PersonRepository.cs
 Services/PersonService.cs
-Validators/AgeValidation.cs
+Validators/
+ AdressDTOValidator.cs
+ AgeValidation.cs
+ CreatePersonRequestValidator.cs
 
 [metadataReferences]
 <DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.0/ref/net10.0/
@@ -386,6 +389,8 @@ Validators/AgeValidation.cs
  WindowsBase.dll
 <NUGET>/
  automapper/16.1.1/lib/net10.0/AutoMapper.dll
+ fluentvalidation.dependencyinjectionextensions/12.1.1/lib/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+ fluentvalidation/12.1.1/lib/net8.0/FluentValidation.dll
  microsoft.aspnetcore.openapi/10.0.0/lib/net10.0/Microsoft.AspNetCore.OpenApi.dll
  microsoft.entityframeworkcore.abstractions/10.0.7/lib/net10.0/Microsoft.EntityFrameworkCore.Abstractions.dll
  microsoft.entityframeworkcore.inmemory/10.0.7/lib/net10.0/Microsoft.EntityFrameworkCore.InMemory.dll
