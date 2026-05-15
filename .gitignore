@@ -20,3 +20,5 @@ project.lock.json
 
 # EF Migrations cache
 *.cache
+
+.fake
