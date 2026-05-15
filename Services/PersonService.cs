@@ -45,6 +45,9 @@ public class PersonService : IPersonService
             // 3. use  helper many-to-many
             var finalAdresses = await _personRepository.GetOrCreateAdresses(adressModels);
 
+            if (request.Adresses == null || request.Adresses.Count == 0)
+            throw new ArgumentException("At least one address is required.");
+
             // 4. add final adress to person
             foreach (var a in finalAdresses)
                 newPerson.Adresses.Add(a);
