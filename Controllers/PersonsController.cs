@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PersonApi.Models;
+using PersonApi.Models.DTOs;
 using PersonApi.Models.Requests;
 using PersonApi.Services;
 
@@ -15,7 +16,7 @@ public class Personscontroller(IPersonService service) : ControllerBase
 
     // Maps a GET request to the "/persons" URL to return the list of persons as a JSON response. The Results.Ok() method is used to create a successful HTTP response with the list of persons as the content.
     [HttpGet]    
-    public ActionResult<List<Person>> GetPersons()
+    public ActionResult<List<PersonDTO>> GetPersons()
         {
             return Ok(_service.GetPersons());
         }

@@ -20,6 +20,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddAutoMapper(options => options.AddMaps(typeof(Program)));
 
 
 var app = builder.Build();

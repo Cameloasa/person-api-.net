@@ -73,13 +73,13 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
     public IEnumerable<Person> GetAllPersons()
     {
 
-        return _context.People.Include(p => p.Adress).ToList();
+        return _context.People.Include(p => p.Adresses).ToList();
     }
 
     public Person? GetPersonById(string id)
     {
         return _context.People
-        .Include(p => p.Adress)
+        .Include(p => p.Adresses)
         .ThenInclude(a => a.People)
         .FirstOrDefault(p => p.Id == id);
     }

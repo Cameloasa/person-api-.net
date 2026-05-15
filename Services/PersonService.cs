@@ -1,13 +1,15 @@
 //src/Services/PersonService.cs
 namespace PersonApi.Services;
 
+using AutoMapper;
 using PersonApi.Models;
+using PersonApi.Models.DTOs;
 using PersonApi.Models.Requests;
 using PersonApi.Repositories;
 
 public interface IPersonService
 {
-    IEnumerable<Person> GetPersons();
+    IEnumerable<PersonDTO> GetPersons();
     Person? GetPersonById(string id);
     Task<Person> CreatePerson(CreatePersonRequest request);
     Task<Person?> UpdatePerson(string id,CreatePersonRequest request);
@@ -16,10 +18,12 @@ public interface IPersonService
 public class PersonService : IPersonService
 {
     private readonly IPersonRepository _personRepository;
+    private readonly IMapper _mapper;
 
-    public PersonService(IPersonRepository repo)
+    public PersonService(IPersonRepository repo , IMapper mapper)
     {
         _personRepository = repo;
+        _mapper = mapper;
     }
    
     //create
@@ -67,9 +71,11 @@ public class PersonService : IPersonService
     }
 
     // get all persons
-    public IEnumerable<Person> GetPersons()
+    public IEnumerable<PersonDTO> GetPersons()
     {
-        return _personRepository.GetAllPersons();
+        IEnumerable<Person> persons =  _personRepository.GetAllPersons();
+
+        return _mapper.Map<IEnumerable<PersonDTO>>(persons);
     }
 
     // get person by id

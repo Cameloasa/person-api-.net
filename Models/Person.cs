@@ -9,6 +9,9 @@ namespace PersonApi.Models;
         public bool IsMarried { get; set; } = isMarried;
 
         //relation to adress - one to many
-        public string AdressId {get; set;} = null!;
-        public Adress Adress { get; set; } = null!;
+        //public string AdressId {get; set;} = null!;
+        //public Adress Adress { get; set; } = null!;
+
+        //relation many-to-many
+        public ICollection<Adress> Adresses = [];
     }
