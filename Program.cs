@@ -1,9 +1,9 @@
 
 using System.Text.Json.Serialization;
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PersonApi.Context;
+using PersonApi.Models;
 using PersonApi.Models.DTOs;
 using PersonApi.Models.Requests;
 using PersonApi.Repositories;
@@ -28,7 +28,7 @@ builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseInMemoryDatabase("Test database"));
 
 //config for identity 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>(options => 
+builder.Services.AddIdentityApiEndpoints<User>(options => 
 { 
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = true;
@@ -90,7 +90,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //use Identity user
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<User>();
 app.MapControllers();
 
 //endpoints for the application. In this case, it maps a GET request to the root URL ("/") to return a simple "Hello World!" response.

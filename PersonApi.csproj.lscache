@@ -67,6 +67,7 @@ Models/
   PersonDTO.cs
  Person.cs
  Requests/CreatePersonRequest.cs
+ User.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  PersonApi.AssemblyInfo.cs

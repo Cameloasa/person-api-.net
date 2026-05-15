@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonApi.Models;
 using PersonApi.Models.DTOs;
@@ -7,7 +8,8 @@ using PersonApi.Services;
 
 namespace PersonApi.Controllers;
 [ApiController]
-[Route("api/[controller]")] // /persons
+[Route("api/[controller]")]
+[Authorize] // /persons
 public class Personscontroller(IPersonService service) : ControllerBase
 {
 
