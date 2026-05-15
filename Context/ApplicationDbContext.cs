@@ -33,10 +33,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         .WithMany(a => a.People)
         //.HasForeignKey(p => p.AdressId);
         .UsingEntity(join => join.HasData([
-            new{PeopleId = "PERS01", AdressesId = "adressId1"},
-            new{PeopleId = "PERS01", AdressesId = "adressId2"},
-            new{PeopleId = "PERS02", AdressesId = "adressId2"},
-            new{PeopleId = "PERS03", AdressesId = "adressId1"}
+            new{PeopleId = "PERS01", AdressesId = adressId1},
+            new{PeopleId = "PERS01", AdressesId = adressId2},
+            new{PeopleId = "PERS02", AdressesId = adressId2},
+            new{PeopleId = "PERS03", AdressesId = adressId1}
         ]));
         
 

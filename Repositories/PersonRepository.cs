@@ -23,26 +23,24 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
     {
         try
         {
-            // 1. Get adress 
-            var adress = await GetOrCreateAdress(personToSave);
+            // 1. final list for adress
+            var finalAdresses = await GetOrCreateAdresses(personToSave.Adresses.ToList());
 
-            // 2. Link person to adress
-            personToSave.AdressId = adress.Id;
-            personToSave.Adress = adress;
+            // 2. add final list
+            personToSave.Adresses.Clear();
+            foreach (var a in finalAdresses)
+                personToSave.Adresses.Add(a);
 
-            // 3. save person to db
-            var result = await _context.People.AddAsync(personToSave);
-            int changes = await _context.SaveChangesAsync();
+            // 3. Save person
+            await _context.People.AddAsync(personToSave);
+            await _context.SaveChangesAsync();
 
-            if (changes > 0)
-                return result.Entity;
-
-            throw new Exception("Could not add person");
-        }
-        catch
-        {
-            throw;
-        }
+            return personToSave;
+    }
+    catch
+    {
+        throw;
+    }
     }
 
     //delete
@@ -89,24 +87,30 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
     {
         try
         {
-            // 1. Find person in DB
-            var existingPerson = await _context.People.FindAsync(id);
+            // 1. Find person in db
+            var existingPerson = await _context.People
+                .Include(p => p.Adresses)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (existingPerson == null)
                 return null;
 
-            // 2. Update simple fields
+            // 2. Update person
             existingPerson.Name = personToUpdate.Name;
             existingPerson.Age = personToUpdate.Age;
             existingPerson.IsMarried = personToUpdate.IsMarried;
 
-            // 3. Update address (existing or new)
-            var adress = await GetOrCreateAdress(personToUpdate);
+            // 3. Update adrese (many-to-many)
+            var finalAdresses = await GetOrCreateAdresses(personToUpdate.Adresses.ToList());
 
-            existingPerson.AdressId = adress.Id;
-            existingPerson.Adress = adress;
+            // clear old list
+            existingPerson.Adresses.Clear();
 
-            // 4. Save changes
+            // add new list
+            foreach (var a in finalAdresses)
+                existingPerson.Adresses.Add(a);
+
+            // 4. Save
             await _context.SaveChangesAsync();
 
             return existingPerson;
@@ -117,26 +121,33 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
         }
     }
     //helper for adress
-    private async Task<Adress> GetOrCreateAdress(Person person)
+    private async Task<List<Adress>> GetOrCreateAdresses(List<Adress> adresses)
     {
-        // if we have AdressId → use current adress
-        if (!string.IsNullOrEmpty(person.AdressId))
-        {
-            var existing = await _context.Adresses.FindAsync(person.AdressId)
-                ?? throw new Exception("AdressId does not exist.");
+        var finalList = new List<Adress>();
 
-            return existing;
+        foreach (var adress in adresses)
+        {
+            // Search if adress is in the database
+            var existing = await _context.Adresses
+                .FirstOrDefaultAsync(a =>
+                    a.Street == adress.Street &&
+                    a.Zip == adress.Zip &&
+                    a.City == adress.City);
+
+            if (existing != null)
+            {
+                // use existing adress
+                finalList.Add(existing);
+            }
+            else
+            {
+                // Find the nrew adress
+                await _context.Adresses.AddAsync(adress);
+                await _context.SaveChangesAsync();
+                finalList.Add(adress);
+            }
         }
 
-        // id we have an obiect Address → create a new adress
-        if (person.Adress != null)
-        {
-            await _context.Adresses.AddAsync(person.Adress);
-            await _context.SaveChangesAsync();
-            return person.Adress;
-        }
-
-        throw new Exception("No address provided.");
+        return finalList;
     }
-
 }

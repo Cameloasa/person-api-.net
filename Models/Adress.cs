@@ -8,5 +8,5 @@ namespace PersonApi.Models;
     public string City { get; set; } = city;
 
     //relation to tabel People
-    public ICollection<Person>People {get; set;} = [];
+    public ICollection<Person> People { get; set; } = new List<Person>();
 }

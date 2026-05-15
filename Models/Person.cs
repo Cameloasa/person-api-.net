@@ -13,5 +13,5 @@ namespace PersonApi.Models;
         //public Adress Adress { get; set; } = null!;
 
         //relation many-to-many
-        public ICollection<Adress> Adresses = [];
+        public ICollection<Adress> Adresses { get; set; } = new List<Adress>();
     }
