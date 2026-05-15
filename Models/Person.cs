@@ -1,17 +1,23 @@
 
+using PersonApi.Models.DTOs;
+
 namespace PersonApi.Models;
 
-    public class Person( string name, int age, bool isMarried)
+    public class Person
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString()[..6];
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public bool IsMarried { get; set; }
+
+    public List<Adress> Adresses { get; set; } = new();
+
+    public Person(string name, int age, bool isMarried)
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString()[..6];
-        public string Name { get; set; } = name;
-        public int Age { get; set; } = age;
-        public bool IsMarried { get; set; } = isMarried;
-
-        //relation to adress - one to many
-        //public string AdressId {get; set;} = null!;
-        //public Adress Adress { get; set; } = null!;
-
-        //relation many-to-many
-        public ICollection<Adress> Adresses { get; set; } = new List<Adress>();
+        Name = name;
+        Age = age;
+        IsMarried = isMarried;
     }
+
+    public Person() {} // EF Core needs this
+}

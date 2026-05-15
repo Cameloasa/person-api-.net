@@ -11,6 +11,8 @@ public interface IPersonRepository
     public Task<Person> CreatePerson(Person personToSave);
     public Task<Person?> UpdatePerson(string id, Person personToUpdate);
     public Task<bool> DeletePerson(string id);
+    // many-to-many helper
+    Task<List<Adress>> GetOrCreateAdresses(List<Adress> adresses);
     
 }
 public class PersonRepository (ApplicationDbContext context) : IPersonRepository
@@ -121,7 +123,7 @@ public class PersonRepository (ApplicationDbContext context) : IPersonRepository
         }
     }
     //helper for adress
-    private async Task<List<Adress>> GetOrCreateAdresses(List<Adress> adresses)
+    public async Task<List<Adress>> GetOrCreateAdresses(List<Adress> adresses)
     {
         var finalList = new List<Adress>();
 
