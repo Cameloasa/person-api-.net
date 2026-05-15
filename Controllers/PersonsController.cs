@@ -8,7 +8,7 @@ using PersonApi.Services;
 
 namespace PersonApi.Controllers;
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 [Authorize] // /persons
 public class Personscontroller(IPersonService service) : ControllerBase
 {

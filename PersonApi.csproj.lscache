@@ -58,7 +58,10 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 Context/
  ApplicationDbContext.cs
  IdentityContext.cs
-Controllers/PersonsController.cs
+Controllers/
+ DebugController.cs
+ PersonsController.cs
+ UserController.cs
 Models/
  Adress.cs
  ApplicationProfile.cs
@@ -66,7 +69,9 @@ Models/
   AdressDTO.cs
   PersonDTO.cs
  Person.cs
- Requests/CreatePersonRequest.cs
+ Requests/
+  CreatePersonRequest.cs
+  UpdateUserRequest.cs
  User.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
