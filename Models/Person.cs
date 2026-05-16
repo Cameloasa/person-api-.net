@@ -1,5 +1,4 @@
 
-using PersonApi.Models.DTOs;
 
 namespace PersonApi.Models;
 
