@@ -62,6 +62,7 @@ Controllers/
  DebugController.cs
  PersonsController.cs
  UserController.cs
+Middlewares/RateLimitingMiddleware.cs
 Models/
  Adress.cs
  ApplicationProfile.cs

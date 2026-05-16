@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using PersonApi.Context;
+using PersonApi.Middelewares;
 using PersonApi.Models;
 using PersonApi.Models.DTOs;
 using PersonApi.Models.Requests;
@@ -88,6 +89,9 @@ app.UseHttpsRedirection();
 //add autentication auth
 app.UseAuthentication();
 app.UseAuthorization();
+
+//middlewares
+app.UseMiddleware<RateLimitingMiddleware>();
 
 //use Identity user
 app.MapIdentityApi<User>();
